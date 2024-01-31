@@ -16,6 +16,7 @@ from django.template.loader import render_to_string
 from django.core.mail import EmailMessage,EmailMultiAlternatives 
   
 from django.views.decorators.cache import never_cache 
+
  
 
 def register(request): 
@@ -28,13 +29,13 @@ def register(request):
        if form.is_valid(): 
          form.save() 
          user = form.cleaned_data.get('username') 
-  
          subject = f'AUCTIONG REGISTRATION' 
          message = 'Account Register Confirmation ' 
          recepiant = form.cleaned_data.get('email') 
          user = form.cleaned_data.get  ('username') 
          context ={ 
            'user' : user 
+         
          } 
          card_html = render_to_string('registeremail.html', context) 
   
@@ -42,9 +43,6 @@ def register(request):
   
          email.attach_alternative(card_html, 'text/html') 
          email.send(fail_silently=False) 
-  
-         messages.success(request,'success') 
-  
          messages.success(request,'Account created for '+ user) 
          return redirect('login') 
   
@@ -52,12 +50,15 @@ def register(request):
    return render(request,'register.html', context) 
   
  
+ 
+ 
+ 
+ 
 def user_login(request): 
    if request.user.is_authenticated: 
      return redirect('home') 
    else: 
      if request.method == 'POST': 
-  
        username = request.POST.get('username') 
        password = request.POST.get('password') 
        user = authenticate(request, username = username, password = password) 
@@ -97,3 +98,4 @@ def contact(request):
   
 def is_admin(user): 
      return user.is_staff  # Assuming staff members are admins 
+     
